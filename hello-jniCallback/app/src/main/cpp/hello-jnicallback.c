@@ -22,6 +22,9 @@
 #include <assert.h>
 
 
+//https://www.cnblogs.com/SGY1593279715/p/10946152.html
+//...表示可变参数，__VA_ARGS__的作用是替换省略号的内容
+
 // Android log function wrappers
 static const char* kTAG = "hello-jniCallback";
 #define LOGI(...) \
@@ -168,6 +171,9 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
 
     g_ctx.done = 0;
     g_ctx.mainActivityObj = NULL;
+
+    LOGI("JNI_OnLoad");
+
     return  JNI_VERSION_1_6;
 }
 
@@ -258,6 +264,8 @@ void*  UpdateTicks(void* context) {
  */
 JNIEXPORT void JNICALL
 Java_com_example_hellojnicallback_MainActivity_startTicks(JNIEnv *env, jobject instance) {
+    LOGI("startTicks");
+
     pthread_t       threadInfo_;
     pthread_attr_t  threadAttr_;
 
@@ -285,6 +293,8 @@ Java_com_example_hellojnicallback_MainActivity_startTicks(JNIEnv *env, jobject i
  */
 JNIEXPORT void JNICALL
 Java_com_example_hellojnicallback_MainActivity_StopTicks(JNIEnv *env, jobject instance) {
+    LOGI("StopTicks");
+
     pthread_mutex_lock(&g_ctx.lock);
     g_ctx.done = 1;
     pthread_mutex_unlock(&g_ctx.lock);

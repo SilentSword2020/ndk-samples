@@ -50,6 +50,8 @@ TickContext g_ctx;
  * to return a new VM String. See the corresponding Java source
  * file located at:
  *
+ *  获取手机的ABI
+ *
  *   hello-jniCallback/app/src/main/java/com/example/hellojnicallback/MainActivity.java
  */
 JNIEXPORT jstring JNICALL
@@ -227,12 +229,16 @@ void*  UpdateTicks(void* context) {
                 "TickerThread status: start ticking ...");
     while(1) {
         gettimeofday(&beginTime, NULL);
+        //加锁
         pthread_mutex_lock(&pctx->lock);
         int done = pctx->done;
         if (pctx->done) {
             pctx->done = 0;
         }
+        //释放锁
         pthread_mutex_unlock(&pctx->lock);
+
+
         if (done) {
             break;
         }
@@ -272,13 +278,15 @@ Java_com_example_hellojnicallback_MainActivity_startTicks(JNIEnv *env, jobject i
     pthread_attr_init(&threadAttr_);
     pthread_attr_setdetachstate(&threadAttr_, PTHREAD_CREATE_DETACHED);
 
+    //初始化锁(独占锁)
     pthread_mutex_init(&g_ctx.lock, NULL);
 
     jclass clz = (*env)->GetObjectClass(env, instance);
     g_ctx.mainActivityClz = (*env)->NewGlobalRef(env, clz);
     g_ctx.mainActivityObj = (*env)->NewGlobalRef(env, instance);
 
-    int result  = pthread_create( &threadInfo_, &threadAttr_, UpdateTicks, &g_ctx);
+    //开始一个线程并执行UpdateTicks, 参数是g_ctx
+    int result = pthread_create(&threadInfo_, &threadAttr_, UpdateTicks, &g_ctx);
     assert(result == 0);
 
     pthread_attr_destroy(&threadAttr_);
@@ -295,11 +303,13 @@ JNIEXPORT void JNICALL
 Java_com_example_hellojnicallback_MainActivity_StopTicks(JNIEnv *env, jobject instance) {
     LOGI("StopTicks");
 
+    //加锁
     pthread_mutex_lock(&g_ctx.lock);
-    g_ctx.done = 1;
+    g_ctx.done = 1;//通过标志位停止线程
     pthread_mutex_unlock(&g_ctx.lock);
 
     // waiting for ticking thread to flip the done flag
+    //等待线程执行跳出循环（线程执行会设置g_ctx.done=0）
     struct timespec sleepTime;
     memset(&sleepTime, 0, sizeof(sleepTime));
     sleepTime.tv_nsec = 100000000;
@@ -307,6 +317,7 @@ Java_com_example_hellojnicallback_MainActivity_StopTicks(JNIEnv *env, jobject in
         nanosleep(&sleepTime, NULL);
     }
 
+    //释放全局数据
     // release object we allocated from StartTicks() function
     (*env)->DeleteGlobalRef(env, g_ctx.mainActivityClz);
     (*env)->DeleteGlobalRef(env, g_ctx.mainActivityObj);

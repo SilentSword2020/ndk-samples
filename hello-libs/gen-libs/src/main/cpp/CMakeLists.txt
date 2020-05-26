@@ -30,3 +30,6 @@ file(MAKE_DIRECTORY ${lib_build_DIR})
 add_subdirectory(${lib_src_DIR}/gmath ${lib_build_DIR}/gmath)
 add_subdirectory(${lib_src_DIR}/gperf ${lib_build_DIR}/gperf)
 
+
+#包含其他 CMake 项目
+#https://developer.android.google.cn/studio/projects/configure-cmake?hl=zh_cn#include-other-cmake-projects

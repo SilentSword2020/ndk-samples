@@ -312,7 +312,7 @@ Java_com_example_hellojnicallback_MainActivity_StopTicks(JNIEnv *env, jobject in
     //等待线程执行跳出循环（线程执行会设置g_ctx.done=0）
     struct timespec sleepTime;
     memset(&sleepTime, 0, sizeof(sleepTime));
-    sleepTime.tv_nsec = 100000000;
+    sleepTime.tv_nsec = 100000000;//100ms
     while (g_ctx.done) {
         nanosleep(&sleepTime, NULL);
     }

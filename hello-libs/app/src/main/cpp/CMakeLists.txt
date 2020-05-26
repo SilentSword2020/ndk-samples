@@ -20,6 +20,7 @@ cmake_minimum_required(VERSION 3.4.1)
 # configure import libs
 set(distribution_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../../distribution)
 
+#静态库
 add_library(lib_gmath STATIC IMPORTED)
 set_target_properties(lib_gmath PROPERTIES IMPORTED_LOCATION
     ${distribution_DIR}/gmath/lib/${ANDROID_ABI}/libgmath.a)
@@ -28,6 +29,7 @@ set_target_properties(lib_gmath PROPERTIES IMPORTED_LOCATION
 # refer to app/build.gradle, jniLibs section for that purpose.
 # ${ANDROID_ABI} is handy for our purpose here. Probably this ${ANDROID_ABI} is
 # the most valuable thing of this sample, the rest are pretty much normal cmake
+#分享库
 add_library(lib_gperf SHARED IMPORTED)
 set_target_properties(lib_gperf PROPERTIES IMPORTED_LOCATION
     ${distribution_DIR}/gperf/lib/${ANDROID_ABI}/libgperf.so)
@@ -47,3 +49,5 @@ target_link_libraries(hello-libs
                       lib_gmath
                       lib_gperf
                       log)
+
+#https://www.jianshu.com/p/6f697761f31a

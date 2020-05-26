@@ -11,7 +11,7 @@ android {
         versionName = '1.0'
         externalNativeBuild {
             cmake {
-                arguments '-DANDROID_STL=c++_static'
+                arguments '-DANDROID_STL=c++_static' //C++支持：使用静态c++标准库 libc++_static.a
             }
         }
     }

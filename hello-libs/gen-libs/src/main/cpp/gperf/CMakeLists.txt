@@ -36,3 +36,9 @@ add_custom_command(TARGET gperf POST_BUILD
                    "${distribution_DIR}/gperf/include/gperf.h"
                    COMMENT "Copying gperf to output directory")
 
+#上面的cmake add_custom_command()作用：
+#在所有CMake命令执行后(POST_BUILD)，复制gperf.h文件到distribution/gperf/include目录中
+
+#cmake add_custom_command()
+#https://cmake.org/cmake/help/latest/command/add_custom_command.html
+
